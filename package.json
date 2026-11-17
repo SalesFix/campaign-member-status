@@ -1,56 +1,22 @@
 {
-	"name": "protected-campaignmember-statuses",
+	"name": "campaign-member-status",
 	"private": true,
 	"version": "1.3.0",
-	"description": "Protected Campaign Member Statuses",
+	"description": "Protected Campaign Member Statuses by Campaign Type, with a Campaign Member Statuses management tab",
 	"scripts": {
-		"apex:test": "rm testresults/* && sf apex run test --test-level RunLocalTests --output-dir testresults --result-format human --code-coverage",
-		"audittrail": "sf data query --query \"SELECT Id,Action,Section,CreatedDate,CreatedBy.Name,Display FROM SetupAuditTrail ORDER BY CreatedDate DESC\" --resultformat csv > logs/SetupAuditTrail.csv",
-		"cpd": "$HOME/pmd/bin/pmd cpd --dir force-app --language apex --minimum-tokens 100 --format vs",
-		"devhub-x2od": "sf config set target-dev-hub=x2od",
-		"docs:setup": ". doc-assets/setupApexDox.sh",
-		"initialize": ". scripts/initialize.sh",
-		"lint:aura": "eslint --no-error-on-unmatched-pattern **/aura/**/*.js",
-		"lint:lwc": "eslint --no-error-on-unmatched-pattern **/lwc/**/*.js",
-		"lint": "npm run lint:lwc && npm run lint:aura",
-		"myinfo": "sf org display --verbose",
-		"pmd:scan:csv": "$HOME/pmd/bin/pmd check --dir force-app --rulesets pmd/ruleset.xml --format csv --report-file pmd/pmd.csv --cache .pmdCache --short-names",
-		"pmd:scan:deploy:csv": "$HOME/pmd/bin/pmd check --dir force-app --rulesets pmd/deployRules.xml --format csv --report-file pmd/deploy.csv --cache .pmdCache --short-names",
-		"postinstall": "husky install",
-		"precommit": "lint-staged",
-		"prepare": "husky install",
-		"prettier:apex": "prettier --write \"force-app/**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}\"",
-		"prettier:docs": "prettier --write \"docs/*.html\"",
-		"prettier:verify:apex": "prettier --list-different \"force-app/**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}\"",
-		"prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
-		"prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
-		"prune": "git branch | grep -v \"main\" | xargs git branch -D",
-		"scratchorg": ". scripts/orginit.sh",
+		"apex:test": "sf apex run test --test-level RunLocalTests --result-format human --code-coverage --wait 30",
+		"prettier": "prettier --write \"force-app/**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}\" \"unpackaged/**/*.trigger\" \"*.md\" \"docs/**/*.md\"",
+		"prettier:verify": "prettier --list-different \"force-app/**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}\" \"unpackaged/**/*.trigger\"",
+		"test": "npm run test:unit",
+		"test:unit": "sfdx-lwc-jest --skipApiVersionCheck -- --passWithNoTests",
 		"test:unit:coverage": "sfdx-lwc-jest --coverage --skipApiVersionCheck -- --passWithNoTests",
 		"test:unit:debug": "sfdx-lwc-jest --debug --skipApiVersionCheck -- --passWithNoTests",
-		"test:unit:watch": "sfdx-lwc-jest --watch --skipApiVersionCheck -- --passWithNoTests",
-		"test:unit": "sfdx-lwc-jest --skipApiVersionCheck -- --passWithNoTests",
-		"test": "npm run test:unit",
-		"updateHighlight": ". doc-assets/updateHighlight.sh"
+		"test:unit:watch": "sfdx-lwc-jest --watch --skipApiVersionCheck -- --passWithNoTests"
 	},
 	"devDependencies": {
 		"@prettier/plugin-xml": "^3.4.2",
 		"@salesforce/sfdx-lwc-jest": "^7.9.0",
-		"husky": "^9.1.7",
-		"lint-staged": "^15.5.2",
-		"marked": "^15.0.12",
 		"prettier": "^3.9.10",
 		"prettier-plugin-apex": "^2.3.0"
-	},
-	"lint-staged": {
-		"force-app/**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}": [
-			"prettier --write"
-		],
-		"docs/assets/*.css": [
-			"prettier --write"
-		],
-		"docs/**/*.html": [
-			"prettier --write"
-		]
 	}
 }

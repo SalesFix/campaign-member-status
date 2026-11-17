@@ -1,4 +1,0 @@
-# Default reviewers for everything in this repository.
-# Code owners are only enforced when branch protection on main has
-# "Require review from Code Owners" turned on.
-*       @SalesFix/salesfix-architects

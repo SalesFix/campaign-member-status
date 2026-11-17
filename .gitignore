@@ -58,3 +58,6 @@ force-app/main/default/layouts/Campaign-Campaign Layout.layout-meta.xml
 
 # Actual Custom Metadata. Remove this if you are cloning the repo and wanting to save it
 #force-app/main/default/customMetadata
+
+# Local editor settings
+.vscode/
