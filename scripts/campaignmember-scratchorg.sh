@@ -15,6 +15,7 @@ sf project deploy start
 sf project deploy start --source-dir unpackaged
 
 sf org assign permset --name Campaign_Type_Member_Status_Admin --target-org CampaignMemberStatus
+sf org assign permset --name CMS_Campaign_Member_Status_Manager --target-org CampaignMemberStatus
 
 sf apex run test --test-level RunLocalTests --output-dir testresults --result-format human --code-coverage --wait 20
 

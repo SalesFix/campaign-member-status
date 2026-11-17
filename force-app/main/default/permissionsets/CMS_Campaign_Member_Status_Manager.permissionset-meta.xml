@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>CMS_StatusManagerController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <customMetadataTypeAccesses>
+        <enabled>true</enabled>
+        <name>Campaign_Type_Member_Status__mdt</name>
+    </customMetadataTypeAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>CMS_Manage_Campaign_Member_Statuses</name>
+    </customPermissions>
+    <description>Maintain protected Campaign Member Status rules from the Campaign Member Statuses tab without Customize Application. Saves are logged in the Setup Audit Trail. Assign only to trusted users.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Campaign Member Status Manager</label>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>CMS_Status_Config_Deployed__e</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <tabSettings>
+        <tab>CMS_Status_Manager</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

@@ -1,5 +1,4 @@
-# These owners will be the default owners for everything in
-# the repo. Unless a later match takes precedence,
-# @global-owner1 and @global-owner2 will be requested for
-# review when someone opens a pull request.
-*       @global-owner1 @global-owner2
+# Default reviewers for everything in this repository.
+# Code owners are only enforced when branch protection on main has
+# "Require review from Code Owners" turned on.
+*       @SalesFix/salesfix-architects

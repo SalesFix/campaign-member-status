@@ -27,5 +27,17 @@
 	"[visualforce]": {
 		"editor.defaultFormatter": "salesforce.salesforcedx-vscode-visualforce",
 		"editor.formatOnSave": false
+	},
+	"xml.preferences.showSchemaDocumentationType": "none",
+	"workbench.colorCustomizations": {
+		"statusBar.background": "#05628a",
+		"statusBar.foreground": "#ffffff",
+		"statusBar.border": "#05628a",
+		"statusBarItem.hoverBackground": "#327e9f",
+		"statusBarItem.remoteBackground": "#0b4c68",
+		"statusBarItem.remoteForeground": "#ffffff",
+		"activityBar.activeBorder": "#05628a",
+		"activityBarBadge.background": "#05628a",
+		"activityBarBadge.foreground": "#ffffff"
 	}
 }

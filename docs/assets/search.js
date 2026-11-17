@@ -88,7 +88,10 @@ function search(e) {
             // set results list HTML
             searchResults.innerHTML = resultsList;
         } else {
-            searchResults.innerHTML = `<li>No Results Found for: ${searchInput.value}</li>`;
+            // Build the node with textContent so the search text is never parsed as HTML.
+            const noResults = document.createElement('li');
+            noResults.textContent = `No Results Found for: ${searchInput.value}`;
+            searchResults.replaceChildren(noResults);
         }
     } else {
         highlighter.unmark();

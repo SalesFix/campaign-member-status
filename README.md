@@ -1,37 +1,27 @@
-![Codecov](https://img.shields.io/codecov/c/github/dschach/campaign-member-status?logo=codecov)
-[![PR Validation](https://github.com/dschach/campaign-member-status/actions/workflows/pr.yml/badge.svg)](https://github.com/dschach/campaign-member-status/actions/workflows/pr.yml)
-[![On Push](https://github.com/dschach/campaign-member-status/actions/workflows/ci.yml/badge.svg)](https://github.com/dschach/campaign-member-status/actions/workflows/ci.yml)
-[![release-please](https://github.com/dschach/campaign-member-status/actions/workflows/release-please.yml/badge.svg)](https://github.com/dschach/campaign-member-status/actions/workflows/release-please.yml)
-
 # Campaign Type Member Statuses
 
 **[Changelog](CHANGELOG.md)**
 
-This code was developed for Marketing Admins who want to automate and enforce the Campaign Member Status options for Campaigns of certain types. It was originally written by [Sercante LLC](https://github.com/sercante-llc/protected-campaign-statuses).
+This code was developed for Marketing Admins who want to automate and enforce the Campaign Member Status options for Campaigns of certain types. It was originally written by [Sercante LLC](https://github.com/sercante-llc/protected-campaign-statuses) and maintained by [X-Squared on Demand](https://github.com/x2od/campaign-member-status). This is the SalesFix fork.
 
 > This application is designed to run on the Salesforce Platform
 
 - [Campaign Type Member Statuses](#campaign-type-member-statuses)
-- [A solution for Campaign Type Member Statuses and step-by-step instructions for use.](#a-solution-for-campaign-type-member-statuses-and-step-by-step-instructions-for-use)
-  - [Originally written by Adam Erstelle](#originally-written-by-adam-erstelle)
-  - [**Campaign Type Member Statuses**](#campaign-type-member-statuses-1)
+- [A solution for Campaign Type Member Statuses](#a-solution-for-campaign-type-member-statuses)
 - [Installation Instructions](#installation-instructions)
   - [What You Get](#what-you-get)
   - [Get started](#get-started)
-  - [Quick Install](#quick-install)
+  - [Managing statuses from the Campaign Member Statuses tab](#managing-statuses-from-the-campaign-member-statuses-tab)
+  - [Managing statuses in Setup](#managing-statuses-in-setup)
+  - [Schedule the nightly repair](#schedule-the-nightly-repair)
   - [Pushing Code to a Sandbox](#pushing-code-to-a-sandbox)
   - [Installing into a Scratch Org](#installing-into-a-scratch-org)
-- [**That's cool.** **What's behind the curtain?**](#thats-cool-whats-behind-the-curtain)
+  - [Upgrading from an earlier version](#upgrading-from-an-earlier-version)
+- [What's behind the curtain?](#whats-behind-the-curtain)
 - [How it Works](#how-it-works)
-  - [New Campaign Created](#new-campaign-created)
-  - [Editing a Campaign Type Member Status](#editing-a-campaign-type-member-status)
-  - [Removing a Campaign Type Member Status](#removing-a-campaign-type-member-status)
 - [FAQ](#faq)
-  - [Do you have any suggested statuses?](#do-you-have-any-suggested-statuses)
-  - [Why Don't you just prevent people from messing around with Protected Statuses?](#why-dont-you-just-prevent-people-from-messing-around-with-protected-statuses)
-  - [I get Apex test errors after deploying the code. How can I fix them?](#i-get-apex-test-errors-after-deploying-the-code-how-can-i-fix-them)
 
-# A solution for Campaign Type Member Statuses and step-by-step instructions for use.
+# A solution for Campaign Type Member Statuses
 
 ## Originally written by [Adam Erstelle](https://thespotforpardot.com/author/adamsercante-com/)
 
@@ -43,43 +33,40 @@ Jenna Molby posted a [fantastic solution](https://jennamolby.com/how-to-automati
 
 Another thing that could be a problem comes later when other people might make changes to your carefully crafted structure. What happens if someone edits or even removes these statuses?
 
-This code was developed for Marketing Admins who want to automate and enforce the Campaign Member Status options for Campaigns of certain types. It was originally written by Sercante LLC (https://github.com/sercante-llc/protected-campaign-statuses).
-
-## **Campaign Type Member Statuses**
-
-Campaign Type Member Statuses is a solution to solve this problem of automating (and enforcing) Campaign Member Statuses by Type. It allows you to:
+Campaign Type Member Statuses solves this by automating (and enforcing) Campaign Member Statuses by Type. It allows you to:
 
 1.  Define the Campaign Member Statuses that should always be present on given Campaign Types.
-2.  Restore the Protected Statuses on Active Campaigns should someone make changes.
-3.  Create additional Statuses for specific reasons.
-4.  Override by authorized users on a per-Campaign basis.
+2.  Restore the protected statuses on active Campaigns should someone change them.
+3.  Create additional statuses for specific reasons.
+4.  Override by authorised users on a per-Campaign basis.
+5.  Let trusted marketing users maintain the rules from a tab, without Setup access.
 
 # Installation Instructions
 
 ## What You Get
 
-When deploying this package to your org, you will get:
+- 1 Custom Metadata Type (`Campaign_Type_Member_Status__mdt`) with page layout and list view
+- 1 Campaign custom field (`Protect_Campaign_Member_Statuses__c`)
+- 1 Change Data Capture selection (`CampaignMemberStatus`)
+- 1 Platform Event (`CMS_Status_Config_Deployed__e`) used by the tab to report when a change has finished saving
+- 1 Lightning tab (**Campaign Member Statuses**) and the `cmsStatusManager` Lightning web component behind it
+- 1 Custom Permission (`CMS_Manage_Campaign_Member_Statuses`)
+- 2 Permission Sets: **Campaign Type Member Status Admin** and **Campaign Member Status Manager**
+- 7 Apex classes, 8 Apex test classes, and sample triggers in `unpackaged/triggers-sample`
 
-- 1 Custom Metadata Type (and page layout)
-- 1 Campaign Custom Field
-- 1 ChangeDataCapture configuration
-- 2 Apex Triggers
-- 5 Production Apex Classes
-- 4 Apex Test Classes
+The Change Data Capture selection uses one of your org's Change Data Capture entity slots. Check one is free before deploying.
 
 ## Get started
 
-If you install only the core code via install button or the package, then you will not have any triggers installed.
+If you install only the core code via the package, you will not have any triggers installed.
 
-1.  Deploy the main directory if you install from this repository. AppExchange installations (on roadmap) skip to step 2.
+1.  Deploy the main directory.
 
     ```bash
     sf project deploy start --source-dir force-app
     ```
 
-2.  You need to update your existing handlers or create new ones for the following objects and contexts.
-
-    Log in to Salesforce, and go to Setup. Or create/update the triggers with the IDE of your choice:
+2.  Update your existing trigger handlers, or create new triggers, for the following objects and contexts.
 
     | **Object**                      | **Context**   | **Apex code**                                              |
     | ------------------------------- | ------------- | ---------------------------------------------------------- |
@@ -88,148 +75,104 @@ If you install only the core code via install button or the package, then you wi
     | Campaign                        | after insert  | `new CMS_CampaignTriggerHandler().afterInsert();`          |
     | Campaign                        | before update | `new CMS_CampaignTriggerHandler().beforeUpdate();`         |
 
-Sample code is included in [unpackaged/triggers-sample/triggers](https://github.com/dschach/campaign-member-status/unpackaged/triggers-sample/triggers)
+    Sample triggers are in [unpackaged/triggers-sample/triggers](unpackaged/triggers-sample/triggers). Both handlers also have a constructor that takes the trigger records directly, for trigger frameworks that pass them in.
 
-Campaign trigger
+3.  Define your protected statuses, either from the [Campaign Member Statuses tab](#managing-statuses-from-the-campaign-member-statuses-tab) or [in Setup](#managing-statuses-in-setup).
+4.  [Schedule the nightly repair](#schedule-the-nightly-repair).
 
-```Apex
-/**
- * @description  Trigger on `Campaign` with methods to call - change this to avoid logic in the trigger
- */
-trigger CampaignTrigger on Campaign(before insert, after insert, before update) { //NOPMD
-	System.TriggerOperation triggerEvent = Trigger.operationType;
-	switch on triggerEvent {
-		when AFTER_INSERT {
-			new CMS_CampaignTriggerHandler().afterInsert();
-		}
-		when BEFORE_INSERT {
-			new CMS_CampaignTriggerHandler().beforeInsert();
-		}
-		when BEFORE_UPDATE {
-			new CMS_CampaignTriggerHandler().beforeUpdate();
-		}
-	}
-}
+Campaigns with Types not set up keep the two default statuses that Salesforce creates. There's no need to add the checkbox field on Campaign to page layouts, but if you do, make it read-only.
+
+## Managing statuses from the Campaign Member Statuses tab
+
+Assign the **Campaign Member Status Manager** permission set to the people who should maintain the rules. It gives them the Campaign Member Statuses tab and the `CMS_Manage_Campaign_Member_Statuses` custom permission. They don't need Customize Application.
+
+```bash
+sf org assign permset --name CMS_Campaign_Member_Status_Manager --on-behalf-of user@example.com
 ```
 
-CampaignMemberStatusEvent trigger
+On the tab:
 
-```Apex
-/**
- * @description  Trigger on `CampaignMemberStatusChangeEvent` with methods to call
- */
-trigger CampaignMemberStatusEventTrigger on CampaignMemberStatusChangeEvent(after insert) {
-	new CMS_MemberStatusEventTriggerHandler().afterInsert();
-}
-```
+1.  Choose a Campaign Type. Types that already have protected statuses are marked "(protected)".
+2.  Add, rename or remove statuses, tick the one **Default** status, and tick **Responded** where the status counts as a response.
+3.  Click **Save**. The change is deployed as custom metadata and usually finishes within a few seconds; the tab tells you when it has.
 
-Next, you need to define your Protected Statuses. This is done with Custom Metadata Types.
+Things to know:
 
-1.  Log in to Salesforce, and go to Setup.
-2.  Navigate to Custom Metadata Types, and click Manage Records for Campaign Type Member Status.
+- **Removing a status stops protecting it.** Custom metadata records can't be deleted from Apex, so the record is marked **Inactive**. The status is not deleted from existing Campaigns.
+- **Removing every status stops protecting the Campaign Type.**
+- New Campaigns get the new statuses straight away. Existing protected Campaigns pick up changes when one of their statuses is edited, or at the nightly repair.
+- Every save is recorded in **Setup > Deployment Status** and the **Setup Audit Trail** under the user's name.
+- The permission is checked on the server for every request, and input is validated on the server too. Hiding the tab is not the only control.
+- Only assign the permission set to people trusted to change org-wide marketing configuration.
+
+## Managing statuses in Setup
+
+Administrators can still manage the records directly.
+
+1.  In Setup, go to Custom Metadata Types and click **Manage Records** for Campaign Type Member Status.
 
     ![Campaign Type Member Status](doc-assets/assets/Campaign-Member-Statuses-1.png)
 
-3.  To create your first ones, click New
+2.  Click **New**.
 
     ![Campaign Type Member Status](doc-assets/assets/Campaign-Member-Statuses-2.png)
 
-4.  Fill in the various fields.
+3.  Fill in the fields.
 
-    - `Label`: Used in the List of Campaign Statuses in the Setup view in step 3 above. Recommended convention:  TYPE-STATUS
-    - `Name`: This is an API name that can be used by developers. Not required by this package. Recommended: let this autofill after you type in the Label.
-    - `Campaign Type`: This is the actual value for the Campaign's Type field.
-    - `Protected Status`: This is the Status value that will become protected.
-    - `Is Default`: Select this if this Status should be the default (please pick only 1 per Type).
-    - `Is Responded`: Select this if this Status should be marked as Responded.
-    - When complete, your screen may look something like this:
+    - `Label`: shown in the list of records. Recommended convention: TYPE-STATUS
+    - `Name`: API name. Let it autofill from the Label.
+    - `Campaign Type`: the value of the Campaign's Type field. Matching ignores capitalisation.
+    - `Member Status`: the status that becomes protected.
+    - `Is Default`: the default status. If more than one record for a Type is ticked, only the first is used; if none is ticked, the first status becomes the default.
+    - `Responded`: tick if this status counts as Responded.
+    - `Inactive`: tick to stop protecting this status without deleting the record.
 
-      ![Campaign Type Member Statuses](doc-assets/assets/Campaign-Member-Statuses-3.png)
+    ![Campaign Type Member Statuses](doc-assets/assets/Campaign-Member-Statuses-3.png)
 
-5.  Click `Save` (or `Save & New`) and repeat a whole bunch.
-6.  Lastly, time to set up a scheduled job to restore deleted protected statuses.
-7.  Back in Setup, go to Apex Classes and click `Schedule Apex`.
+4.  Click **Save** (or **Save & New**) and repeat.
 
-    ![Campaign Type Member Statuses](doc-assets/assets/Campaign-Member-Statuses-4.png)
+## Schedule the nightly repair
 
-8.  Fill in the few fields.
+The nightly job restores protected statuses that were deleted and corrects Default and Responded settings. It runs as a batch, so it handles any number of Campaigns.
 
-    - `Job Name`: give this a nice descriptive name so you remember what it is in 3 months.
-    - `Apex Class`: CampaignMemberStatusJob
-    - `Frequency`: set this to what works for you. We recommend running this daily during off-peak hours.
-    - `Start`: today
-    - `End`: some time in the distant future
-    - `Preferred Start Time`: off peak hours
-    - When complete, your screen may look something like this:
+Run this once as anonymous Apex (schedules it for 2:00 am daily in your time zone):
 
-      ![Campaign Type Member Statuses](doc-assets/assets/Campaign-Member-Statuses-5.png)
+```apex
+CampaignMemberStatusJob.scheduleDaily();
+```
 
-You are good to go once you have provided your statuses. Give it a whirl by creating a new Campaign with the Type you have set up. Then take a look at the statuses already created.
+Or, in Setup, go to Apex Classes and click **Schedule Apex**, choose `CampaignMemberStatusJob`, and run it daily during off-peak hours.
 
-Campaigns with Types not already set up will keep the default two statuses that Salesforce creates.
-
-There's no need to add the new checkbox field on Campaign to page layouts, but if you want to, it's best to make it read-only.
-
-## Quick Install
-
-Deploy this repository metadata directly to your org, avoiding the need to use the command line:
-
-<a href="https://githubsfdeploy.herokuapp.com?owner=dschach&repo=campaign-member-status">
-  <img alt="Deploy to Salesforce"
-       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
-</a>
+![Campaign Type Member Statuses](doc-assets/assets/Campaign-Member-Statuses-5.png)
 
 ## Pushing Code to a Sandbox
 
-Follow this set of instructions if you want to deploy the solution into your org without using an Unlocked Package. This will require a Sandbox, and then a ChangeSet to deploy into Production.
-
-1. If you know about and use `git`, clone this repository
+1. Clone this repository
 
    ```bash
-   git clone https://github.com/dschach/campaign-member-status.git
+   git clone https://github.com/SalesFix/campaign-member-status.git
    cd campaign-member-status
    ```
 
-1. Set up your environment
+1. [Install the Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm)
 
-   - [Install Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm)
-
-   - or [install from npm](https://www.npmjs.com/package/sfdx-cli)
-     ```bash
-     npm install @salesforce/cli --global
-     ```
-
-1. Authorize your Salesforce org and provide it with an alias (**myorg** in the commands below)
-
-   Connect your project to a Sandbox Org
+1. Authorise your sandbox and give it an alias (**myorg** below)
 
    ```bash
    sf org login web --set-default --alias myorg --instance-url https://test.salesforce.com
    ```
 
-   With orgs that require a specific MyDomain URL, use this slightly altered command, making the correct adjustments
+   For orgs with a My Domain URL:
 
    ```bash
    sf org login web --set-default --alias myorg --instance-url https://mycustomdomain.my.salesforce.com
    ```
 
-1. Run a series of commands to deploy each of the parts, or skip to the next item to push them all at once
-
-   Run this command in a terminal to deploy just the main code
+1. Deploy the main code, the sample triggers (change them to fit your trigger framework) and, optionally, the sample custom metadata
 
    ```bash
    sf project deploy start --source-dir force-app
-   ```
-
-   Run this command in the terminal to deploy the included sample triggers. You may wish to change them to fit with your trigger handler framework.
-
-   ```bash
    sf project deploy start --source-dir unpackaged/triggers-sample
-   ```
-
-   Run this command in the terminal to deploy the bundled sample custom metadata
-
-   ```bash
    sf project deploy start --source-dir unpackaged/email-sample
    ```
 
@@ -262,75 +205,65 @@ Follow this set of instructions if you want to deploy the solution into your org
 
    > The sample's Campaign Type value set lists every value Salesforce ships by default plus the new ones. If your org has its own Campaign Type values, add them to `unpackaged/campaign-types-sample/standardValueSets/CampaignType.standardValueSet-meta.xml` before deploying so they stay active. If a Campaign record type restricts the Type picklist, add the new values to that record type too.
 
-1. Or just run one command to push all the parts together
-
-   ```bash
-   sf project deploy start
-   ```
-
-1. You'll need a custom permission set to access the Campaign field, or just add it to an existing permission set and delete this one
+1. Assign the permission sets
 
    ```bash
    sf org assign permset --name Campaign_Type_Member_Status_Admin
+   sf org assign permset --name CMS_Campaign_Member_Status_Manager
    ```
 
-1. Continue with [Post-Install Configuration](#get-started)
+1. Continue with [Get started](#get-started)
 
 ## Installing into a Scratch Org
 
-1. Set up your environment. The steps include:
-
-   - Enable Dev Hub in your main org
-   - [Install Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm)
-
-1. If you haven't already done so, authorize your hub org and provide it with an alias (**myhuborg** in the command below):
+1. Enable Dev Hub in your main org, [install the Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm), and authorise the Dev Hub:
 
    ```bash
-   sf login org --set-default-dev-hub --alias myhuborg
+   sf org login web --set-default-dev-hub --alias myhuborg
    ```
 
-1. If you know about and use git, clone this repository
+1. Clone this repository and run the setup script
 
    ```bash
-   git clone https://github.com/dschach/campaign-member-status.git
+   git clone https://github.com/SalesFix/campaign-member-status.git
    cd campaign-member-status
-   ```
-
-1. Run the included script to create a scratch org and push the metadata
-
-   ```bash
    . scripts/campaignmember-scratchorg.sh
    ```
 
-1. Continue with [Post-Install Configuration](#get-started)
+1. Continue with [Get started](#get-started)
 
-# **That's cool.** **What's behind the curtain?**
+## Upgrading from an earlier version
 
-We leverage a few cool tools available to us:
+- `CampaignMemberStatusJob` is now a batch job. If it is already scheduled, either delete the scheduled job before deploying and schedule it again afterwards, or turn on **Allow deployments of components when corresponding Apex jobs are pending or in progress** (Setup > Deployment Settings).
+- `CampaignMemberRepository.getGroupedProtectedStatuses()` was replaced by `getAllStatusRecords()`. `CampaignMemberService.getGroupedProtectedStatuses()` now returns Types keyed in lower case. Update any custom code that called these.
+- `CampaignMemberService.enforceProtectedStatusesForCampaigns()` now returns a map of error messages by Campaign Id instead of throwing.
 
-- Custom Metadata Types: Allows the Protected Statuses to be treated like normal Salesforce metadata and can be deployed around like any other metadata (changesets, insert devops tool here)
-- Campaign Custom Field: `Campaign.Has_Protected_Campaign_Member_Statuses__c` is automatically checked by the solution if a Campaign is created and there are Custom Metadata Type records that specify this Campaign's Type. It is also what allows the rest of the code to keep the statuses intact. You can clear the checkbox for this field to make changes to the statuses if you need to. However, you can't enable protection afterwards.
-- Change Data Capture: We turn this on for CampaignMemberStatus so we can detect edits to statuses and then fix the records after-the-fact. Sadly we can't (yet?) put any triggers on CampaignMemberStatus (which would have been ideal).
-- Triggers: We use them to kick off the automation that we've built when a Campaign is created. We also use them to watch for Campaign Member Status edits (through the ChangeEvents from Change Data Capture) so we can set things right afterwardsd.
+# What's behind the curtain?
+
+- **Custom Metadata Types** hold the protected statuses, so they deploy like any other metadata.
+- **Campaign custom field** `Protect_Campaign_Member_Statuses__c` is ticked automatically when a Campaign is created with a protected Type. You can clear it to make changes to that Campaign's statuses, but you can't turn protection back on afterwards.
+- **Change Data Capture** on CampaignMemberStatus tells us when a status is edited so we can put it right. Salesforce doesn't support triggers on CampaignMemberStatus.
+- **Triggers** on Campaign set up new Campaigns; the change event trigger watches for edits.
+- **Apex Metadata API** lets the Campaign Member Statuses tab save custom metadata without Setup access.
 
 # How it Works
 
-Once everything is set up, Campaigns should maintain a consistent set of Campaign Member Statuses. Here's how we accomplish that.
-
 ## New Campaign Created
 
-When a new Campaign is created, we check to see if the Type of Campaign is defined in any of the Protected Campaign Member Status records (the Custom Metadata Type that was set up earlier). If there is a match, the solution will:
+When a Campaign is created with a Type that has protected statuses, the solution:
 
-1. Automatically add a checkbox to the Campaign Custom Field "Has Campaign Type Member Statuses".
-1. Automatically adjust the CampaignMemberStatus records to match all Campaign Type Member Statuses expected
+1. Ticks "Protect Campaign Member Statuses".
+1. Adds the protected statuses, sets the configured default, and removes the statuses Salesforce created automatically that aren't part of the configuration.
 
-## Editing a Campaign Type Member Status
+If the statuses can't be applied, the Campaign isn't saved and the user sees why. Cloned Campaigns are protected based on their own Type.
 
-For a Campaign that "Has Campaign Type Member Statuses", when one of the CampaignMemberStatus records is edited we will double check all statuses of that Campaign to make sure that all Protected ones still exist. If there are any missing, they will be recreated almost instantly (you may need to refresh the page for them to show up if there's a delay).
+## Editing a protected status
 
-## Removing a Campaign Type Member Status
+When a status on a protected Campaign is edited, the Campaign's protected statuses are checked straight away: missing ones are recreated, and Default and Responded are reset. Refresh the page if you don't see it immediately. Statuses users add for their own reasons are left alone.
 
-If a user removes a Campaign Type Member Status, the Scheduled Job (that was created as part of [Post-Install Configuration](#installation-instructions)) will search for Campaigns missing a Status and recreate it.
+## Removing a protected status
+
+Change Data Capture can't tell us which Campaign a deleted status belonged to, so deleted protected statuses are restored by the [nightly repair](#schedule-the-nightly-repair).
 
 # FAQ
 
@@ -340,15 +273,10 @@ Of course! Here are a few to get your creative juices flowing.
 
 ![Suggested Campaign Member Statuses](doc-assets/assets/CMStatuses.png)
 
-## Why Don't you just prevent people from messing around with Protected Statuses?
+## Why don't you just prevent people from changing protected statuses?
 
-We really wish we could. A "before update" and "before delete" Apex Trigger would be the simplest way to handle this. Unfortunately, Apex Triggers are not (yet) possible on CampaignMemberStatus records, so we end up having to fix it after-the-fact.
+We'd like to. A "before update" and "before delete" trigger would be simplest, but Salesforce doesn't support triggers on CampaignMemberStatus, so we fix things afterwards.
 
-## I get Apex test errors after deploying the code. How can I fix them?
+## I get Apex test errors in my own tests that create Campaigns. How can I fix them?
 
-If you have Apex tests which set up a Campaign record as part of the test, the functionality in this package will get called and might blow up. This is because how Salesforce internally treats the automatic generation of Campaign Member Status records when a new Campaign is created (it's weird).
-
-You have 2 options:
-
-1. Use your trigger framework to bypass your Campaign Trigger Handler
-1. To actually see the records that Salesforce would create, you would need to have your test `@isTest(seeAllData=true)`. There are a lot of considerations with this approach, so please use wisely.
+Earlier versions relied on the two statuses Salesforce creates automatically, which tests can't see unless they use `seeAllData=true`. This version doesn't rely on them, so your tests should work without changes. If your tests insert Campaigns with a protected Type, they will now get the protected statuses.

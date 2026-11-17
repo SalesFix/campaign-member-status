@@ -35,6 +35,7 @@
 	},
 	"devDependencies": {
 		"@prettier/plugin-xml": "^3.4.2",
+		"@salesforce/sfdx-lwc-jest": "^7.9.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^15.5.2",
 		"marked": "^15.0.12",
