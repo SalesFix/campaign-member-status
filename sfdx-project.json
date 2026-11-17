@@ -19,6 +19,9 @@
 		},
 		{
 			"path": "unpackaged/email-sample"
+		},
+		{
+			"path": "unpackaged/campaign-types-sample"
 		}
 	],
 	"name": "Auto Campaign Member Status",

@@ -213,7 +213,7 @@ Follow this set of instructions if you want to deploy the solution into your org
    sf org login web --set-default --alias myorg --instance-url https://mycustomdomain.my.salesforce.com
    ```
 
-1. Run a series of commands to deploy each of the three parts, or skip to the next item to push them all at once
+1. Run a series of commands to deploy each of the parts, or skip to the next item to push them all at once
 
    Run this command in a terminal to deploy just the main code
 
@@ -233,7 +233,30 @@ Follow this set of instructions if you want to deploy the solution into your org
    sf project deploy start --source-dir unpackaged/email-sample
    ```
 
-1. Or just run one command to push all three parts together
+   Run this command in the terminal to deploy sample statuses for other common Campaign Types. It also adds the `Event`, `Content Download` and `Survey` values to the Campaign Type picklist.
+
+   ```bash
+   sf project deploy start --source-dir unpackaged/campaign-types-sample
+   ```
+
+   The default status for each type is in bold. Statuses marked ✓ count as Responded.
+
+   | Campaign Type    | Member Statuses                                                                                  |
+   | ---------------- | ------------------------------------------------------------------------------------------------ |
+   | Webinar          | **Invited**, Registered ✓, Attended ✓, Watched Recording ✓, No Show, Declined                     |
+   | Event            | **Invited**, Registered ✓, Waitlisted ✓, Attended ✓, No Show, Declined                            |
+   | Conference       | **Targeted**, Registered ✓, Attended ✓, Meeting Held ✓, No Show                                   |
+   | Trade Show       | **Targeted**, Booth Visit ✓, Badge Scanned ✓, Meeting Held ✓                                      |
+   | Direct Mail      | **Sent**, Delivered, Returned, Responded ✓                                                       |
+   | Telemarketing    | **To Call**, No Answer, Left Voicemail, Connected ✓, Meeting Booked ✓, Not Interested, Do Not Call |
+   | Advertisement    | **Clicked** ✓, Form Submitted ✓                                                                  |
+   | Content Download | **Downloaded** ✓, Follow-Up Requested ✓                                                          |
+   | Referral Program | **Referred** ✓, Contacted ✓, Qualified ✓, Disqualified ✓                                          |
+   | Survey           | **Sent**, Started, Completed ✓, Opted Out                                                        |
+
+   > The sample's Campaign Type value set lists every value Salesforce ships by default plus the three new ones. If your org has its own Campaign Type values, add them to `unpackaged/campaign-types-sample/standardValueSets/CampaignType.standardValueSet-meta.xml` before deploying so they stay active. If a Campaign record type restricts the Type picklist, add the new values to that record type too.
+
+1. Or just run one command to push all the parts together
 
    ```bash
    sf project deploy start
