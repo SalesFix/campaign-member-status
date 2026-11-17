@@ -24,4 +24,92 @@
         <shortDescription>Cannot Re-enable</shortDescription>
         <value>Once disabled, this setting cannot be re-enabled.</value>
     </labels>
+    <labels>
+        <fullName>CMS_Could_Not_Apply_Statuses</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Could not apply statuses</shortDescription>
+        <value>The protected Campaign Member Statuses for this Campaign Type could not be applied: {0}</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_No_Permission</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No permission to manage rules</shortDescription>
+        <value>You don&apos;t have permission to manage Campaign Member Status rules. Ask your Salesforce administrator for the Campaign Member Status Manager permission set.</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_Type_Required</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Campaign Type required</shortDescription>
+        <value>Select a Campaign Type.</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_Type_Invalid</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Campaign Type not found</shortDescription>
+        <value>{0} is not a Campaign Type in this org.</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_Nothing_To_Save</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Nothing to save</shortDescription>
+        <value>There are no changes to save. Add at least one status.</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_Status_Required</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Status name required</shortDescription>
+        <value>Every status needs a name.</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_Status_Too_Long</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Status name too long</shortDescription>
+        <value>Status names can be up to 255 characters: {0}</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_Duplicate_Status</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Duplicate status</shortDescription>
+        <value>{0} is listed more than once. Status names must be unique for each Campaign Type.</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_Exactly_One_Default</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Exactly one default</shortDescription>
+        <value>Choose exactly one default status.</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_Unknown_Record</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Status record no longer exists</shortDescription>
+        <value>One of these statuses has changed since the page loaded. Refresh the page and try again.</value>
+    </labels>
+    <labels>
+        <fullName>CMS_Error_Deploy_Failed</fullName>
+        <categories>CampaignMemberStatus</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Deployment could not start</shortDescription>
+        <value>The change couldn&apos;t be started. Try again, or contact your Salesforce administrator.</value>
+    </labels>
 </CustomLabels>

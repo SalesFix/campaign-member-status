@@ -6,8 +6,8 @@
 			"package": "Auto Campaign Member Status",
 			"versionDescription": "Auto-create and maintain campaign status member values for campaign types. Requires separate trigger implementation.",
 			"versionNumber": "1.3.0.NEXT",
-			"postInstallUrl": "https://dschach.github.io/campaign-member-status/",
-			"releaseNotesUrl": "https://dschach.github.io/campaign-member-status/",
+			"postInstallUrl": "https://github.com/SalesFix/campaign-member-status#readme",
+			"releaseNotesUrl": "https://github.com/SalesFix/campaign-member-status/blob/main/CHANGELOG.md",
 			"apexTestAccess": {
 				"permissionSets": [
 					"Campaign_Type_Member_Status_Admin"
@@ -19,11 +19,14 @@
 		},
 		{
 			"path": "unpackaged/email-sample"
+		},
+		{
+			"path": "unpackaged/campaign-types-sample"
 		}
 	],
 	"name": "Auto Campaign Member Status",
 	"namespace": "",
 	"sfdcLoginUrl": "https://login.salesforce.com",
-	"sourceApiVersion": "59.0",
+	"sourceApiVersion": "66.0",
 	"packageAliases": {}
 }

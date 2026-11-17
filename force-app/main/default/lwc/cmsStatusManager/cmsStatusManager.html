@@ -1,0 +1,146 @@
+<template>
+	<lightning-card title="Campaign Member Status rules" icon-name="standard:campaign">
+		<lightning-button-icon
+			slot="actions"
+			icon-name="utility:refresh"
+			alternative-text="Refresh"
+			title="Refresh"
+			onclick={handleRefresh}
+			disabled={isDeploying}
+			data-id="refresh"></lightning-button-icon>
+
+		<div class="slds-p-horizontal_medium slds-is-relative">
+			<template lwc:if={isLoading}>
+				<lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+			</template>
+
+			<template lwc:if={loadError}>
+				<div class="slds-notify slds-notify_alert slds-alert_error" role="alert" data-id="load-error">{loadError}</div>
+			</template>
+			<template lwc:else>
+				<p class="slds-m-bottom_small">
+					Choose a Campaign Type, then list the statuses every Campaign of that type must have. New Campaigns get exactly these statuses. Existing protected Campaigns pick up
+					changes when one of their statuses is edited, or at the nightly repair. Removing a status stops protecting it; it is not deleted from existing Campaigns.
+				</p>
+
+				<lightning-combobox
+					name="campaignType"
+					label="Campaign Type"
+					placeholder="Select a Campaign Type"
+					options={typeOptions}
+					value={selectedType}
+					onchange={handleTypeChange}
+					disabled={isDeploying}
+					data-id="type-picker"></lightning-combobox>
+
+				<template lwc:if={hasSelectedType}>
+					<template lwc:if={isTypeRetired}>
+						<div class="slds-notify slds-notify_alert slds-alert_warning slds-m-top_small" role="status" data-id="retired-type">
+							This Campaign Type is no longer an active picklist value. You can remove its statuses to stop protecting it.
+						</div>
+					</template>
+
+					<template lwc:if={hasRows}>
+						<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-m-top_medium" aria-label="Protected statuses">
+							<thead>
+								<tr class="slds-line-height_reset">
+									<th scope="col">Status</th>
+									<th scope="col" class="slds-text-align_center">Default</th>
+									<th scope="col" class="slds-text-align_center">Responded</th>
+									<th scope="col"><span class="slds-assistive-text">Remove</span></th>
+								</tr>
+							</thead>
+							<tbody>
+								<template for:each={rows} for:item="row">
+									<tr key={row.key} data-id="status-row">
+										<td>
+											<lightning-input
+												type="text"
+												label="Status name"
+												variant="label-hidden"
+												value={row.status}
+												max-length="255"
+												data-key={row.key}
+												data-id="status-name"
+												onchange={handleStatusChange}
+												disabled={isDeploying}></lightning-input>
+										</td>
+										<td class="slds-text-align_center">
+											<lightning-input
+												type="checkbox"
+												label="Default status"
+												variant="label-hidden"
+												checked={row.isDefault}
+												data-key={row.key}
+												data-id="status-default"
+												onchange={handleDefaultChange}
+												disabled={isDeploying}></lightning-input>
+										</td>
+										<td class="slds-text-align_center">
+											<lightning-input
+												type="checkbox"
+												label="Counts as responded"
+												variant="label-hidden"
+												checked={row.hasResponded}
+												data-key={row.key}
+												data-id="status-responded"
+												onchange={handleRespondedChange}
+												disabled={isDeploying}></lightning-input>
+										</td>
+										<td>
+											<lightning-button-icon
+												icon-name="utility:delete"
+												alternative-text="Remove status"
+												title="Remove status"
+												variant="bare"
+												data-key={row.key}
+												data-id="remove-row"
+												onclick={handleRemoveRow}
+												disabled={isDeploying}></lightning-button-icon>
+										</td>
+									</tr>
+								</template>
+							</tbody>
+						</table>
+					</template>
+
+					<template lwc:if={showStopProtectingNotice}>
+						<div class="slds-notify slds-notify_alert slds-alert_warning slds-m-top_small" role="status" data-id="stop-protecting">
+							Saving with no statuses stops protecting this Campaign Type. Existing Campaigns keep their current statuses.
+						</div>
+					</template>
+					<template lwc:if={showNoStatusesHint}>
+						<p class="slds-m-top_small slds-text-color_weak" data-id="no-statuses">This Campaign Type isn't protected yet. Add the statuses it should have.</p>
+					</template>
+
+					<template lwc:if={hasValidationErrors}>
+						<div class="slds-notify slds-notify_alert slds-alert_error slds-m-top_small" role="alert" data-id="validation-errors">
+							<ul>
+								<template for:each={validationErrors} for:item="message">
+									<li key={message}>{message}</li>
+								</template>
+							</ul>
+						</div>
+					</template>
+
+					<template lwc:if={isDeploying}>
+						<p class="slds-m-top_small" role="status" data-id="deploying">Saving your changes. This usually takes a few seconds.</p>
+					</template>
+				</template>
+			</template>
+		</div>
+
+		<template lwc:if={hasSelectedType}>
+			<div slot="footer" class="slds-grid slds-grid_align-spread slds-wrap">
+				<div class="slds-col">
+					<lightning-button label="Add status" icon-name="utility:add" onclick={handleAddRow} disabled={isDeploying} data-id="add-row"></lightning-button>
+					<lightning-button class="slds-m-left_x-small" label="Remove all" onclick={handleRemoveAll} disabled={isRemoveAllDisabled} data-id="remove-all"></lightning-button>
+				</div>
+				<div class="slds-col">
+					<lightning-button label="Cancel" onclick={handleCancel} disabled={isDeploying} data-id="cancel"></lightning-button>
+					<lightning-button class="slds-m-left_x-small" variant="brand" label="Save" onclick={handleSave} disabled={isSaveDisabled} data-id="save"></lightning-button>
+				</div>
+			</div>
+		</template>
+	</lightning-card>
+</template>

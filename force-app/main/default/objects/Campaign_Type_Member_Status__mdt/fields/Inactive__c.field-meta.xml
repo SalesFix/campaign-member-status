@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Inactive__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When checked, this status is no longer protected. Custom metadata records cannot be deleted from Apex, so the Campaign Member Statuses tab deactivates records instead of deleting them.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Check to stop protecting this status. It is not removed from existing Campaigns.</inlineHelpText>
+    <label>Inactive</label>
+    <type>Checkbox</type>
+</CustomField>

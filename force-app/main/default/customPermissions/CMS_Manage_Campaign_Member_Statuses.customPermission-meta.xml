@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Allows a user to change the protected Campaign Member Status rules (Campaign Type Member Status custom metadata) from the Campaign Member Statuses tab, without needing Customize Application.</description>
+    <isLicensed>false</isLicensed>
+    <label>Manage Campaign Member Status Rules</label>
+</CustomPermission>
