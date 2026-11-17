@@ -233,28 +233,34 @@ Follow this set of instructions if you want to deploy the solution into your org
    sf project deploy start --source-dir unpackaged/email-sample
    ```
 
-   Run this command in the terminal to deploy sample statuses for other common Campaign Types. It also adds the `Event`, `Content Download` and `Survey` values to the Campaign Type picklist.
+   Run this command in the terminal to deploy sample statuses for other common Campaign Types. It also adds `Content / White Paper`, `Event`, `Media Partner`, `Paid Search`, `Social Media - Organic`, `Social Media - Paid`, `Survey` and `Website` to the Campaign Type picklist.
 
    ```bash
    sf project deploy start --source-dir unpackaged/campaign-types-sample
    ```
 
-   The default status for each type is in bold. Statuses marked ✓ count as Responded.
+   The default status for each type is in bold. Statuses marked ✓ count as Responded: the member engaged positively. Negative outcomes such as Unsubscribed, Declined, Not Interested and Disqualified don't count, so they don't inflate response rates or campaign influence.
 
-   | Campaign Type    | Member Statuses                                                                                  |
-   | ---------------- | ------------------------------------------------------------------------------------------------ |
-   | Webinar          | **Invited**, Registered ✓, Attended ✓, Watched Recording ✓, No Show, Declined                     |
-   | Event            | **Invited**, Registered ✓, Waitlisted ✓, Attended ✓, No Show, Declined                            |
-   | Conference       | **Targeted**, Registered ✓, Attended ✓, Meeting Held ✓, No Show                                   |
-   | Trade Show       | **Targeted**, Booth Visit ✓, Badge Scanned ✓, Meeting Held ✓                                      |
-   | Direct Mail      | **Sent**, Delivered, Returned, Responded ✓                                                       |
-   | Telemarketing    | **To Call**, No Answer, Left Voicemail, Connected ✓, Meeting Booked ✓, Not Interested, Do Not Call |
-   | Advertisement    | **Clicked** ✓, Form Submitted ✓                                                                  |
-   | Content Download | **Downloaded** ✓, Follow-Up Requested ✓                                                          |
-   | Referral Program | **Referred** ✓, Contacted ✓, Qualified ✓, Disqualified ✓                                          |
-   | Survey           | **Sent**, Started, Completed ✓, Opted Out                                                        |
+   | Campaign Type           | Member Statuses                                                                                    |
+   | ----------------------- | -------------------------------------------------------------------------------------------------- |
+   | Email (`email-sample`)  | **Sent**, Opened, Clicked ✓, Responded ✓, Unsubscribed                                             |
+   | Webinar                 | **Invited**, Registered ✓, Attended ✓, On Demand ✓, No Show ✓, Declined                            |
+   | Event                   | **Invited**, Registered ✓, Waitlisted ✓, Attended ✓, No Show ✓, Declined                           |
+   | Conference              | **Face To Face** ✓, Content Request ✓, Attended Talk ✓                                             |
+   | Trade Show              | **Face To Face** ✓, Content Request ✓, Attended Talk ✓                                             |
+   | Content / White Paper   | **Downloaded** ✓, Follow-Up Requested ✓                                                            |
+   | Social Media - Organic  | **Clicked**, Form Submitted ✓                                                                      |
+   | Social Media - Paid     | **Clicked**, Form Submitted ✓                                                                      |
+   | Paid Search             | **Clicked**, Form Submitted ✓                                                                      |
+   | Advertisement           | **Clicked**, Form Submitted ✓                                                                      |
+   | Website                 | **Visitor** ✓                                                                                      |
+   | Media Partner           | **Connected** ✓                                                                                    |
+   | Direct Mail             | **Sent**, Delivered, Returned, Responded ✓                                                         |
+   | Telemarketing           | **To Call**, No Answer, Left Voicemail, Connected ✓, Meeting Booked ✓, Not Interested, Do Not Call |
+   | Referral Program        | **Referred** ✓, Contacted ✓, Qualified ✓, Disqualified                                             |
+   | Survey                  | **Sent**, Started, Completed ✓, Opted Out                                                          |
 
-   > The sample's Campaign Type value set lists every value Salesforce ships by default plus the three new ones. If your org has its own Campaign Type values, add them to `unpackaged/campaign-types-sample/standardValueSets/CampaignType.standardValueSet-meta.xml` before deploying so they stay active. If a Campaign record type restricts the Type picklist, add the new values to that record type too.
+   > The sample's Campaign Type value set lists every value Salesforce ships by default plus the new ones. If your org has its own Campaign Type values, add them to `unpackaged/campaign-types-sample/standardValueSets/CampaignType.standardValueSet-meta.xml` before deploying so they stay active. If a Campaign record type restricts the Type picklist, add the new values to that record type too.
 
 1. Or just run one command to push all the parts together
 
